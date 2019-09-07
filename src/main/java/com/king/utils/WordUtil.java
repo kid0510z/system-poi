@@ -43,6 +43,7 @@ public class WordUtil {
             e.printStackTrace();
         } finally {
             try {
+                assert stream != null;
                 stream.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -50,94 +51,86 @@ public class WordUtil {
         }
     }
 
-    public static void writeDataDocx(String fileName, TreeMap<Integer, ArrayList<ExamPro>> data) {
+    public static void writeDataDocx(String wordPath, String wordFileName, TreeMap<Integer, ArrayList<ExamPro>> data) throws IOException {
 
+        String fileName = wordPath + wordFileName;
         InputStream istream = null;
         OutputStream ostream = null;
-        try {
-            istream = new FileInputStream(fileName);
-            ostream = new FileOutputStream(fileName);
-            XWPFDocument document = new XWPFDocument();
 
-            // 标题
-            //添加标题
-            XWPFParagraph titleParagraph = document.createParagraph();
-            //设置段落居中
-            titleParagraph.setAlignment(ParagraphAlignment.CENTER);
+        istream = new FileInputStream(fileName);
+        ostream = new FileOutputStream(fileName);
+        XWPFDocument document = new XWPFDocument();
 
-            XWPFRun titleParagraphRun = titleParagraph.createRun();
-            titleParagraphRun.setText("Make Mr.King");
-            titleParagraphRun.setColor("000000");
-            titleParagraphRun.setFontSize(16);
-            titleParagraphRun.setBold(true);
+        // 标题
+        //添加标题
+        XWPFParagraph titleParagraph = document.createParagraph();
+        //设置段落居中
+        titleParagraph.setAlignment(ParagraphAlignment.CENTER);
 
-            // 准备数据
-            Set<Integer> keySet = data.keySet();
-            for (Integer type : keySet) {
-                // 创建一个段落
-                XWPFParagraph paragraph = document.createParagraph();
+        XWPFRun titleParagraphRun = titleParagraph.createRun();
+        titleParagraphRun.setText(wordFileName + "   -------   Make Mr.King");
+        titleParagraphRun.setColor("000000");
+        titleParagraphRun.setFontSize(16);
+        titleParagraphRun.setBold(true);
 
-                // 一个run 类型 （多选）
-                XWPFRun run0 = paragraph.createRun();
-                run0.setText(typeOptions[type]);
-                run0.setColor("0E51BE");
-                run0.setBold(true);
-                run0.setFontSize(15);
-                run0.addCarriageReturn();
-                // 题干描述
-                List<ExamPro> examPros = data.get(type);
-                for (int i = 0; i < examPros.size(); i++) {
-                    XWPFRun run00 = paragraph.createRun();
-                    ExamPro examPro = examPros.get(i);
-                    run00.setText((i + 1) + ". " + examPro.getDry());
-                    run00.setBold(true);
-                    run00.setFontSize(13);
-                    run00.addCarriageReturn();
-                    // 4个选项
-                    List<String> options = examPro.getOptions();
-                    for (int j = 0; j < options.size(); j++) {
-                        XWPFRun runT = paragraph.createRun();
-                        runT.addTab();
-                        XWPFRun run = paragraph.createRun();
-                        run.setText(numOptions[j] + ". " + options.get(j));
-                        run.addCarriageReturn();
-                        Integer[] answers = examPro.getAnswers();
-                        if (type != 3 && type != 4) {
-                            if (Arrays.asList(answers).contains(j)) {
-                                //设置段落背景颜色
-                                CTRPr ctrPr = run.getCTR().addNewRPr();
-                                CTShd cTShd = ctrPr.addNewShd();
-                                cTShd.setFill("FFFC00");
-                            }
-                        } else {
-                            run.setColor("FF0000");
+        // 准备数据
+        Set<Integer> keySet = data.keySet();
+        for (Integer type : keySet) {
+            // 创建一个段落
+            XWPFParagraph paragraph = document.createParagraph();
+
+            // 一个run 类型 （多选）
+            XWPFRun run0 = paragraph.createRun();
+            run0.setText(typeOptions[type]);
+            run0.setColor("0E51BE");
+            run0.setBold(true);
+            run0.setFontSize(15);
+            run0.addCarriageReturn();
+            // 题干描述
+            List<ExamPro> examPros = data.get(type);
+            for (int i = 0; i < examPros.size(); i++) {
+                XWPFRun run00 = paragraph.createRun();
+                ExamPro examPro = examPros.get(i);
+                run00.setText((i + 1) + ". " + examPro.getDry());
+                run00.setBold(true);
+                run00.setFontSize(13);
+                run00.addCarriageReturn();
+                // 4个选项
+                List<String> options = examPro.getOptions();
+                for (int j = 0; j < options.size(); j++) {
+                    XWPFRun runT = paragraph.createRun();
+                    runT.addTab();
+                    XWPFRun run = paragraph.createRun();
+                    run.setText(numOptions[j] + ". " + options.get(j));
+                    run.addCarriageReturn();
+                    Integer[] answers = examPro.getAnswers();
+                    if (type != 3 && type != 4) {
+                        if (Arrays.asList(answers).contains(j)) {
+                            //设置段落背景颜色
+                            CTRPr ctrPr = run.getCTR().addNewRPr();
+                            CTShd cTShd = ctrPr.addNewShd();
+                            cTShd.setFill("FFFC00");
                         }
-
+                    } else {
+                        run.setColor("FF0000");
                     }
-                }
 
-            }
-
-            document.write(ostream);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (istream != null) {
-                try {
-                    istream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
             }
-            if (ostream != null) {
-                try {
-                    ostream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+
         }
 
+        document.write(ostream);
+
+        try {
+            istream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            ostream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

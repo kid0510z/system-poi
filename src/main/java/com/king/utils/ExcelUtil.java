@@ -34,64 +34,65 @@ public class ExcelUtil {
      * @return 包含实体类的list集合
      */
     public static <T> List<T> readExcelFile(
-            String filePath, String sheetName, boolean isByName, Class<T> entityClass, LinkedHashMap<String, String> fieldMap) {
+            String filePath, String sheetName, boolean isByName, Class<T> entityClass, LinkedHashMap<String, String> fieldMap) throws Exception {
         //定义要返回的list
         List<T> resultList = new ArrayList<T>();
-        try {
-            // 获得excel文件对象workbook
-            Workbook wb = getExcelBook(filePath);
 
-            Sheet sheet;
+        // 获得excel文件对象workbook
+        Workbook wb = getExcelBook(filePath);
 
-            if (isByName) {
-                sheet = wb.getSheet(sheetName);
-            } else {
-                sheet = wb.getSheetAt(Integer.valueOf(sheetName));
-            }
+        Sheet sheet;
 
-            //获取工作表的有效行数
-            int realRows = sheet.getPhysicalNumberOfRows();
-
-            //如果Excel中没有数据则提示错误
-            if (realRows <= 1) {
-                throw new ExcelException("Excel文件中没有任何数据");
-            }
-            Row firstRow = sheet.getRow(0);
-            // 第一行的列数
-            int columnNum = firstRow.getPhysicalNumberOfCells();
-            String[] excelFieldNames = new String[columnNum];
-
-            //获取Excel中的列名
-            for (int i = 0; i < columnNum; i++) {
-                excelFieldNames[i] = getCellFormatValue(firstRow.getCell(i)).trim();
-            }
-
-            //判断需要的字段在Excel中是否都存在
-            boolean isExist = true;
-            List<String> excelFieldList = Arrays.asList(excelFieldNames);
-            for (String cnName : fieldMap.keySet()) {
-                if (!excelFieldList.contains(cnName)) {
-                    isExist = false;
-                    break;
-                }
-            }
-
-            //如果有列名不存在，则抛出异常，提示错误
-            if (!isExist) {
-                throw new ExcelException("Excel中缺少必要的字段，或字段名称有误");
-            }
-
-            //将列名和列号放入Map中,这样通过列名就可以拿到列号
-            LinkedHashMap<String, Integer> colMap = new LinkedHashMap<String, Integer>();
-            for (int i = 0; i < excelFieldNames.length; i++) {
-                colMap.put(excelFieldNames[i], firstRow.getCell(i).getColumnIndex());
-            }
-            // 将sheet转换成list
-            sheetConversionList(entityClass, fieldMap, resultList, sheet, realRows, colMap);
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (isByName) {
+            sheet = wb.getSheet(sheetName);
+        } else {
+            sheet = wb.getSheetAt(Integer.valueOf(sheetName));
         }
+
+        if (sheet == null) {
+            throw new ExcelException("未找到所选中的Sheet");
+        }
+
+        //获取工作表的有效行数
+        int realRows = sheet.getPhysicalNumberOfRows();
+
+        //如果Excel中没有数据则提示错误
+        if (realRows <= 1) {
+            throw new ExcelException("Excel文件中没有任何数据");
+        }
+        Row firstRow = sheet.getRow(0);
+        // 第一行的列数
+        int columnNum = firstRow.getPhysicalNumberOfCells();
+        String[] excelFieldNames = new String[columnNum];
+
+        //获取Excel中的列名
+        for (int i = 0; i < columnNum; i++) {
+            excelFieldNames[i] = getCellFormatValue(firstRow.getCell(i)).trim();
+        }
+
+        //判断需要的字段在Excel中是否都存在
+        boolean isExist = true;
+        List<String> excelFieldList = Arrays.asList(excelFieldNames);
+        for (String cnName : fieldMap.keySet()) {
+            if (!excelFieldList.contains(cnName)) {
+                isExist = false;
+                break;
+            }
+        }
+
+        //如果有列名不存在，则抛出异常，提示错误
+        if (!isExist) {
+            throw new ExcelException("Excel中缺少必要的字段，或字段名称有误");
+        }
+
+        //将列名和列号放入Map中,这样通过列名就可以拿到列号
+        LinkedHashMap<String, Integer> colMap = new LinkedHashMap<String, Integer>();
+        for (int i = 0; i < excelFieldNames.length; i++) {
+            colMap.put(excelFieldNames[i], firstRow.getCell(i).getColumnIndex());
+        }
+        // 将sheet转换成list
+        sheetConversionList(entityClass, fieldMap, resultList, sheet, realRows, colMap);
+
         return resultList;
     }
 
@@ -127,7 +128,7 @@ public class ExcelUtil {
     /**
      * xls/xlsx都使用的Workbook
      */
-    private static Workbook getExcelBook(String fileName) {
+    private static Workbook getExcelBook(String fileName) throws ExcelException, IOException {
         if (fileName == null) {
             return null;
         }
@@ -135,16 +136,17 @@ public class ExcelUtil {
         InputStream is;
         try {
             is = new FileInputStream(fileName);
-            if (".xls".equals(extString)) {
-                return new HSSFWorkbook(is);
-            } else if (".xlsx".equals(extString)) {
-                return new XSSFWorkbook(is);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new ExcelException("文件读取失败!");
         }
-        return null;
+        if (".xls".equals(extString)) {
+            return new HSSFWorkbook(is);
+        } else if (".xlsx".equals(extString)) {
+            return new XSSFWorkbook(is);
+        } else {
+            throw new ExcelException("该文件不是Excel文件!");
+        }
+
     }
 
     /**
@@ -187,10 +189,10 @@ public class ExcelUtil {
 
             // 如果传过来值为空则赋值null
             if ("".equals(fieldValue)) {
-                field.set(o,null);
+                field.set(o, null);
                 return;
             }
-                //根据字段类型给字段赋值
+            //根据字段类型给字段赋值
             if (String.class == fieldType) {
                 field.set(o, String.valueOf(fieldValue));
             } else if ((Integer.TYPE == fieldType)

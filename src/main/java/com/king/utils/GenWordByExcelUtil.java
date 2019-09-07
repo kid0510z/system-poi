@@ -17,7 +17,7 @@ import java.util.TreeMap;
  **/
 public class GenWordByExcelUtil {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         String excelFilePath = "F:\\poiDemo\\example.xlsx";
         String wordPath = "F:\\poiDemo\\";
         String wordFileName = "poi.docx";
@@ -25,7 +25,7 @@ public class GenWordByExcelUtil {
 
     }
 
-    public static void genWordByExcel(String excelFilePath, String wordPath, String wordFileName, String sheetName, boolean isByName) {
+    public static void genWordByExcel(String excelFilePath, String wordPath, String wordFileName, String sheetName, boolean isByName) throws Exception {
 
         LinkedHashMap<String, String> filedMap = new LinkedHashMap<>();
         filedMap.put("知识点", "knowledgePoint");
@@ -47,7 +47,7 @@ public class GenWordByExcelUtil {
         //创建word
         WordUtil.createWord(wordPath, wordFileName);
         //写入数据
-        WordUtil.writeDataDocx(wordPath + wordFileName, all);
+        WordUtil.writeDataDocx(wordPath, wordFileName, all);
     }
 
     // 根据分类转换map

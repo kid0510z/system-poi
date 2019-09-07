@@ -97,4 +97,20 @@ public class Exam {
     public void setAnswer(String answer) {
         this.answer = answer;
     }
+
+    @Override
+    public String toString() {
+        return "Exam{" +
+                "knowledgePoint='" + knowledgePoint + '\'' +
+                ", type='" + type + '\'' +
+                ", dry='" + dry + '\'' +
+                ", optionA='" + optionA + '\'' +
+                ", optionB='" + optionB + '\'' +
+                ", optionC='" + optionC + '\'' +
+                ", optionD='" + optionD + '\'' +
+                ", optionE='" + optionE + '\'' +
+                ", optionF='" + optionF + '\'' +
+                ", answer='" + answer + '\'' +
+                '}';
+    }
 }
