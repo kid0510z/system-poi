@@ -1,9 +1,7 @@
-package com.king;
+package com.king.utils;
 
 import com.king.domain.Exam;
-import com.king.pro.ExamPro;
-import com.king.utils.ExcelUtil;
-import com.king.utils.WordUtil;
+import com.king.domain.ExamPro;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -17,7 +15,7 @@ import java.util.TreeMap;
  * @Author: Mr.King
  * @Create: 2019-09-07 09:15
  **/
-public class GenWordByExcel {
+public class GenWordByExcelUtil {
 
     public static void main(String[] args) {
         String excelFilePath = "F:\\poiDemo\\example.xlsx";

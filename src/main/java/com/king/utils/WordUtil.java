@@ -1,6 +1,6 @@
 package com.king.utils;
 
-import com.king.pro.ExamPro;
+import com.king.domain.ExamPro;
 import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;

@@ -1,4 +1,4 @@
-package com.king.pro;
+package com.king.domain;
 
 import java.util.List;
 
