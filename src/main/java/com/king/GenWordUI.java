@@ -42,7 +42,7 @@ public class GenWordUI {
         bg.add(jrb1);
         bg.add(jrb2);
 
-        //SheetName TODO
+        //SheetName
         Temp temp = new Temp(true);
         sheetField = new JTextField(10);
         sheetField.addFocusListener(new JTextFieldHintListener(sheetField, "Sheet名称(编号)", temp));
