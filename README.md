@@ -18,13 +18,13 @@
 
 
 
-![excel](assets\excel.png)
+![excel](assets\\excel.png)
 
 
 
 > Word生成图片
 
-![word](assets\word.png)
+![word](assets\\word.png)
 
 
 > 项目不足
