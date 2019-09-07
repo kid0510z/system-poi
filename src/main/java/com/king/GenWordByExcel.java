@@ -23,11 +23,11 @@ public class GenWordByExcel {
         String excelFilePath = "F:\\poiDemo\\example.xlsx";
         String wordPath = "F:\\poiDemo\\";
         String wordFileName = "poi.docx";
-        genWordByExcel(excelFilePath, wordPath, wordFileName);
+        genWordByExcel(excelFilePath, wordPath, wordFileName, "Sheet1", true);
 
     }
 
-    private static void genWordByExcel(String excelFilePath, String wordPath, String wordFileName) {
+    public static void genWordByExcel(String excelFilePath, String wordPath, String wordFileName, String sheetName, boolean isByName) {
 
         LinkedHashMap<String, String> filedMap = new LinkedHashMap<>();
         filedMap.put("知识点", "knowledgePoint");
@@ -42,7 +42,7 @@ public class GenWordByExcel {
         filedMap.put("答案（选择填ABCDEF，中间不能有空格 判断填A或B，填空题多空用逗号分隔）", "answer");
 
         // 根据文件得到集合
-        List<Exam> sheet2 = ExcelUtil.readExcelFile(excelFilePath, "Sheet1", true, Exam.class, filedMap);
+        List<Exam> sheet2 = ExcelUtil.readExcelFile(excelFilePath, sheetName, isByName, Exam.class, filedMap);
 
         TreeMap<Integer, ArrayList<ExamPro>> all = separete(sheet2);
 
