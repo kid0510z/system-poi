@@ -10,9 +10,8 @@
   4. 什么都不选择默认，读取第一个Sheet，由于里面模板固定，所以只支持下面这个格式（包括Excel头标题的每一个字符必须完全一致）
   5. 然后就是生成存放Word的一个目录，文件名默认根据Excel文件的名称生成，格式为 .docx
 > 如何用?
-  因为该项目是基于java编写的，首先需要java jdk支持，然后下载jar包，进入同级目录，打开cmd，执行 java -jar ```jar包名称``` 回车即可,下载源码放入Idea里面，启动Main方法即可,另外测试的excel文件和本人自己再项目打成的jar包在下面链接
-
-
+  
+  因为该项目是基于java编写的，首先需要java jdk支持，然后下载jar包，进入同级目录，打开cmd，执行 java -jar ```jar包名称``` 回车即可,下载源码放入Idea里面，启动Main方法即可,另外测试的excel文件和本人自己再项目打成的jar包在下面链接  <a href="https://pan.baidu.com/s/1O4cad1lrO6ye2Kb2__FE5w">点我获取</a>
 
 
 > Excel源文件图片
